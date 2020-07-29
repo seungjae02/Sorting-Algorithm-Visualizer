@@ -2,6 +2,9 @@ import pygame
 import sys
 from settings import *
 from buttons_class import *
+from bubblesort_class import *
+from data import *
+
 
 pygame.init()
 
@@ -14,15 +17,23 @@ class App:
         self.sorting_state = ''
         self.load()
 
+        self.nums = num_list.copy()
+        random.shuffle(self.nums)
+
+        self.data_generated = False
+
+        self.data = Data(self, self.nums)
+
     # Define Buttons
         # Start Button
         self.start_button = Buttons(self, SPRINGGREEN, 300, 620, 200, 70, text='START')
         # Visualize Buttons
-        self.bubble_sort_button = Buttons(self, PINK, 10, 10, 148, 50, text='Bubble Sort')
-        self.selection_sort_button = Buttons(self, PINK, 168, 10, 148, 50, text='Selection Sort')
-        self.merge_sort_button = Buttons(self, PINK, 326, 10, 148, 50, text='Merge Sort')
-        self.quick_sort_button = Buttons(self, PINK, 484, 10, 148, 50, text='Quick Sort')
-        self.radix_sort_button = Buttons(self, PINK, 642, 10, 148, 50, text='Radix Sort')
+        self.bubble_sort_button = Buttons(self, PINK, 20*1+110*0, 10, visual_button_length, visual_button_height, text='Bubble Sort')
+        self.selection_sort_button = Buttons(self, PINK, 20*2+110*1, 10, visual_button_length, visual_button_height, text='Selection Sort')
+        self.merge_sort_button = Buttons(self, PINK, 20*3+110*2, 10, visual_button_length, visual_button_height, text='Merge Sort')
+        self.quick_sort_button = Buttons(self, PINK, 20*4+110*3, 10, visual_button_length, visual_button_height, text='Quick Sort')
+        self.radix_sort_button = Buttons(self, PINK, 20*5+110*4, 10, visual_button_length, visual_button_height, text='Radix Sort')
+        self.reset_sorting_button = Buttons(self, RED, 20*6+110*5, 10, visual_button_length, visual_button_height, text='RESET')
 
     def run(self):
         while self.running:
@@ -30,6 +41,10 @@ class App:
                 self.main_menu()
             if self.state == 'visualize':
                 self.visualize_window()
+            if self.state == 'execute':
+                self.execute_algorithms()
+            if self.state == 'sorted':
+                pass
 
         pygame.quit()
         sys.exit()
@@ -70,40 +85,49 @@ class App:
         self.quick_sort_button.draw_button(BLACK)
         self.radix_sort_button.draw_button(BLACK)
 
-    def visualize_buttons_graphics(self, pos, event):
-        if self.bubble_sort_button.isOver(pos):
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.sorting_state = 'bubble sort'
-            elif event.type == pygame.MOUSEMOTION:
-                self.bubble_sort_button.colour = TOMATO
+    def button_functions_graphics(self, pos, event):
+        if self.state != 'sorted':
+            if self.bubble_sort_button.isOver(pos):
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.sorting_state = 'bubble sort'
+                    self.state = 'execute'
+                elif event.type == pygame.MOUSEMOTION:
+                    self.bubble_sort_button.colour = TOMATO
 
-        elif self.selection_sort_button.isOver(pos):
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.sorting_state = 'selection sort'
-            elif event.type == pygame.MOUSEMOTION:
-                self.selection_sort_button.colour = TOMATO
+            elif self.selection_sort_button.isOver(pos):
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.sorting_state = 'selection sort'
+                elif event.type == pygame.MOUSEMOTION:
+                    self.selection_sort_button.colour = TOMATO
 
-        elif self.merge_sort_button.isOver(pos):
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.sorting_state = 'merge sort'
-            elif event.type == pygame.MOUSEMOTION:
-                self.merge_sort_button.colour = TOMATO
+            elif self.merge_sort_button.isOver(pos):
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.sorting_state = 'merge sort'
+                elif event.type == pygame.MOUSEMOTION:
+                    self.merge_sort_button.colour = TOMATO
 
-        elif self.quick_sort_button.isOver(pos):
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.sorting_state = 'quick sort'
-            elif event.type == pygame.MOUSEMOTION:
-                self.quick_sort_button.colour = TOMATO
+            elif self.quick_sort_button.isOver(pos):
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.sorting_state = 'quick sort'
+                elif event.type == pygame.MOUSEMOTION:
+                    self.quick_sort_button.colour = TOMATO
 
-        elif self.radix_sort_button.isOver(pos):
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.sorting_state = 'radix sort'
-            elif event.type == pygame.MOUSEMOTION:
-                self.radix_sort_button.colour = TOMATO
+            elif self.radix_sort_button.isOver(pos):
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.sorting_state = 'radix sort'
+                elif event.type == pygame.MOUSEMOTION:
+                    self.radix_sort_button.colour = TOMATO
 
-        else:
-            self.bubble_sort_button.colour, self.selection_sort_button.colour, self.merge_sort_button.colour, \
-            self.quick_sort_button.colour, self.radix_sort_button.colour = PINK,PINK,PINK,PINK,PINK
+            else:
+                self.bubble_sort_button.colour, self.selection_sort_button.colour, self.merge_sort_button.colour, \
+                self.quick_sort_button.colour, self.radix_sort_button.colour, self.reset_sorting_button = PINK, PINK, PINK, PINK, PINK, RED
+
+        elif self.reset_sorting_button.isOver(pos):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.sorting_state = ''
+                self.reset()
+            elif event.type == pygame.MOUSEMOTION:
+                self.reset_sorting_button = TOMATO
 
     def visualize_button_selected(self):
         if self.sorting_state == 'bubble sort':
@@ -117,7 +141,22 @@ class App:
         elif self.sorting_state == 'radix sort':
             self.radix_sort_button.colour = TOMATO
 
-#################### EXECUTE FUNCTIONS ####################
+    def draw_data(self, obj_array):
+        for index, datum in enumerate(obj_array):
+            pygame.draw.rect(self.screen, datum.colour, ((2 + 2 * index + 6 * index), 800 - datum.value, 6, datum.value))
+        pygame.display.update()
+
+    def final_data_showcase(self, obj_array):
+        for index, datum in enumerate(obj_array):
+            pygame.draw.rect(self.screen, SPRINGGREEN, ((2 + 2 * index + 6 * index), 800 - datum.value, 6, datum.value))
+            pygame.display.update()
+
+    def reset(self):
+        self.state = 'visualize'
+        self.nums = num_list.copy()
+        random.shuffle(self.nums)
+
+    #################### EXECUTE FUNCTIONS ####################
     def main_menu(self):
         self.sketch_main_menu()
         self.sketch_start_button()
@@ -141,10 +180,42 @@ class App:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            self.visualize_buttons_graphics(pos, event)
+            self.button_functions_graphics(pos, event)
 
         self.visualize_button_selected()
-        pygame.display.update()
+
+        if not self.data_generated:
+            self.data.generate_data()
+            self.data_generated = True
+
+        self.draw_data(self.data.obj_array)
 
     def execute_algorithms(self):
-        pass
+        pos = pygame.mouse.get_pos()
+        self.sketch_visualize_buttons()
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            self.button_functions_graphics(pos, event)
+
+        if self.sorting_state == 'bubble sort':
+            bubble_sort = BubbleSort(self)
+            bubble_sort.sort(self.data.obj_array)
+            self.final_data_showcase(self.data.obj_array)
+            if bubble_sort.sorted:
+                self.state = 'sorted'
+
+    def sorted_window(self):
+        pos = pygame.mouse.get_pos()
+        self.sketch_visualize_buttons()
+        pygame.display.update()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.running = False
+            self.button_functions_graphics(pos, event)
+
+
+

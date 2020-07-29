@@ -1,8 +1,8 @@
-num_list = []
-n = 0
-for x in range(100):
-    n += 7
-    num_list.append(n)
+nums = [1,2,3,4,5]
 
-print(num_list)
+print(nums)
 
+nums[2] = 69
+nums[0] = 420
+
+print(nums)
