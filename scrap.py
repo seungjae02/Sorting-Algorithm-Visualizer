@@ -1,8 +1,7 @@
-nums = [1,2,3,4,5]
+a = [1,2,3,4,5]
 
-print(nums)
+while a:
+    print('hi')
+    a.pop()
 
-nums[2] = 69
-nums[0] = 420
-
-print(nums)
+print(a)

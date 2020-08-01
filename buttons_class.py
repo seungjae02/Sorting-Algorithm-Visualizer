@@ -1,6 +1,5 @@
-import pygame
 from settings import *
-
+import pygame
 
 class Buttons():
     def __init__(self, app, colour, x, y, width, height, text=''):
@@ -28,4 +27,3 @@ class Buttons():
             if pos[1] > self.y and pos[1] < self.y + self.height:
                 return True
         return False
-
