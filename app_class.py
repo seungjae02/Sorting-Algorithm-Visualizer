@@ -231,7 +231,8 @@ class App:
             # make merge sort object
             merge_sort = MergeSort(self)
             # sort using merge sort
-            merge_sort.mergesort(self.data)
+            # Initialize previous mid actual as 0
+            merge_sort.mergesort(self.data, 0)
             self.final_data_showcase(self.data)
             self.state = 'sorted'
 
