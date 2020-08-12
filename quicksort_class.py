@@ -1,5 +1,6 @@
 from settings import *
 import pygame
+import time
 
 class QuickSort:
     def __init__(self, app):
@@ -10,22 +11,26 @@ class QuickSort:
                          ((2 + 8 * index), 800 - array[index], 6, array[index]))
 
         pygame.display.update()
+        time.sleep(0.1)
 
         # Draw new organized/updated data
         pygame.draw.rect(self.app.screen, NOT_HIGHLIGHTED_DATA,
                          ((2 + 8 * index), 800 - array[index], 6, array[index]))
 
     def draw_update(self, index, array, colour, piv=False):
+        # For updating pivot points only
         if piv:
             pygame.draw.rect(self.app.screen, colour,
                              ((2 + 8 * index), 800 - array[index], 6, array[index]))
 
+        # For updating non-pivot points
         if not piv:
             pygame.draw.rect(self.app.screen, WHITE, ((2 + 8 * index), 70, 6, 730))
             pygame.draw.rect(self.app.screen, colour,
                              ((2 + 8 * index), 800 - array[index], 6, array[index]))
 
             pygame.display.update()
+            time.sleep(0.1)
 
             # Draw new organized/updated data
             pygame.draw.rect(self.app.screen, NOT_HIGHLIGHTED_DATA,
