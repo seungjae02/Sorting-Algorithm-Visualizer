@@ -1,6 +1,5 @@
 from settings import *
 import pygame
-import time
 
 class MergeSort:
     def __init__(self, app):
@@ -33,9 +32,11 @@ class MergeSort:
     def mergesort(self, array, curr_start):
         if len(array) > 1:
             mid = len(array)//2
+            # Create sub-arrays
             left = array[:mid]
             right = array[mid:]
 
+            # Determine where each sub-arrays actually start in terms of overall array
             left_start = curr_start
             right_start = curr_start + mid
 

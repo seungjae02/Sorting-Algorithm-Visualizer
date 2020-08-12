@@ -5,7 +5,7 @@ from buttons_class import *
 from bubblesort_class import *
 from selectionsort_class import *
 from mergesort_class import *
-from data import *
+from quicksort_class import *
 
 
 pygame.init()
@@ -23,8 +23,6 @@ class App:
         random.shuffle(self.data)
 
         self.data_generated = False
-
-        # self.data = Data(self, self.nums)
 
     # Define Buttons
         # Start Button
@@ -124,6 +122,7 @@ class App:
         elif self.quick_sort_button.isOver(pos):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 self.sorting_state = 'quick sort'
+                self.state = 'execute'
             elif event.type == pygame.MOUSEMOTION:
                 self.quick_sort_button.colour = TOMATO
 
@@ -214,8 +213,6 @@ class App:
             bubble_sort = BubbleSort(self)
             # sort using bubble sort
             bubble_sort.bubblesort(self.data)
-            self.final_data_showcase(self.data)
-            self.state = 'sorted'
 
         if self.sorting_state == 'selection sort':
             print('select')
@@ -223,8 +220,6 @@ class App:
             selection_sort = SelectionSort(self)
             # sort using selection sort
             selection_sort.selectionsort(self.data)
-            self.final_data_showcase(self.data)
-            self.state = 'sorted'
 
         if self.sorting_state == 'merge sort':
             print('merge')
@@ -233,8 +228,18 @@ class App:
             # sort using merge sort
             # Initialize previous mid actual as 0
             merge_sort.mergesort(self.data, 0)
-            self.final_data_showcase(self.data)
-            self.state = 'sorted'
+
+        if self.sorting_state == 'quick sort':
+            print('quick')
+            # make quick sort object
+            quick_sort = QuickSort(self)
+            # sort using quick sort
+            # Initialize with, data set, start index, and end index
+            quick_sort.quicksort(self.data, 0, len(self.data)-1)
+
+        # Once done with all sorting, do final showcase and change state to 'sorted'
+        self.final_data_showcase(self.data)
+        self.state = 'sorted'
 
     def sorted_window(self):
         # reveal reset button
